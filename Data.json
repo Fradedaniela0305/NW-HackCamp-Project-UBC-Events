@@ -9,12 +9,16 @@
       "applicationDeadline": "2025-11-15",
       "price": "Free",
       "type": "Datathon",
-      "category": ["AI", "Data Science", "Statistics"],
+      "category": [
+        "AI", "Data Science", "Statistics",
+        "Machine Learning", "Hackathons", "Research Opportunities"
+      ],
       "faculty": ["Science", "Computer Science", "BUCS"],
       "link": "https://ubc.ca1.qualtrics.com/jfe/form/SV_2gaOyAyImjHTcdE",
       "location": "UBC LIFE Building, Room 2302",
       "image": "https://images.unsplash.com/photo-1555949963-aa79dcee9812?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "002",
       "name": "WiCS Vibe-Code-a-Thon",
@@ -24,12 +28,16 @@
       "applicationDeadline": "2025-11-20",
       "price": "Free",
       "type": "Hackathon",
-      "category": ["AI", "Web", "Software"],
+      "category": [
+        "AI", "Web", "Software",
+        "Web Dev", "Hackathons", "UX/UI", "SWE", "Programming"
+      ],
       "faculty": ["Computer Science", "Engineering"],
       "link": "https://www.instagram.com/wicsubc/",
       "location": "Hugh Dempster Pavilion (DMP 301)",
       "image": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "003",
       "name": "KickStart (BizTech) — Startup Week",
@@ -39,12 +47,16 @@
       "applicationDeadline": "2025-11-10",
       "price": "Free",
       "type": "Startup Competition / Hackathon",
-      "category": ["Entrepreneurship", "Startup", "Business"],
+      "category": [
+        "Entrepreneurship", "Startup", "Business",
+        "Startups", "Product Management", "Consulting", "Networking", "Hackathons"
+      ],
       "faculty": ["All", "Sauder", "Engineering"],
       "link": "https://www.ubcbiztech.com/events/kickstart2025",
       "location": "Various UBC Venues",
       "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "004",
       "name": "PHAS Career Night (Physics & Astronomy)",
@@ -54,12 +66,16 @@
       "applicationDeadline": "2025-11-15",
       "price": "Free",
       "type": "Career Night / Networking",
-      "category": ["Physics", "Careers", "Networking"],
+      "category": [
+        "Physics", "Careers", "Networking",
+        "Research Opportunities", "Internships", "Career Fairs"
+      ],
       "faculty": ["Science"],
       "link": "https://phas.ubc.ca/phas-career-night-0",
       "location": "Hennings (HENN) 2nd Floor Hallways",
       "image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "005",
       "name": "UBC Tech Community Coffee Meetup",
@@ -69,12 +85,16 @@
       "applicationDeadline": "2025-11-17",
       "price": "Free",
       "type": "Meetup / Networking",
-      "category": ["Tech", "Networking"],
+      "category": [
+        "Tech", "Networking",
+        "Social", "Community"
+      ],
       "faculty": ["All"],
       "link": "https://www.eventbrite.ca/e/ubc-tech-community-coffee-meetup-tickets-1970632862941",
       "location": "Freshslice Pizza (UBC area)",
       "image": "https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "006",
       "name": "UBC iGEM Info Session",
@@ -84,12 +104,16 @@
       "applicationDeadline": "2025-10-09",
       "price": "Free",
       "type": "Info Session",
-      "category": ["Synthetic Biology", "Research"],
+      "category": [
+        "Synthetic Biology", "Research",
+        "Bioengineering", "Research Opportunities", "Health"
+      ],
       "faculty": ["Science", "Engineering"],
       "link": "https://ubcigem.com/",
       "location": "Henry Angus Building",
       "image": "https://images.unsplash.com/photo-1581091870622-3d9b4f41a1f8?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "007",
       "name": "Sauder Summit — Case Competition Workshop",
@@ -99,12 +123,16 @@
       "applicationDeadline": "2025-11-10",
       "price": "Free",
       "type": "Workshop",
-      "category": ["Business", "Case Competition"],
+      "category": [
+        "Business", "Case Competition",
+        "Consulting", "Career Skills", "Workshops"
+      ],
       "faculty": ["Sauder"],
       "link": "https://www.saudersummit.ca/",
       "location": "Sauder Learning Labs",
       "image": "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "008",
       "name": "Innovation UBC — Immersion Week Showcase",
@@ -114,12 +142,16 @@
       "applicationDeadline": "2025-09-01",
       "price": "Free",
       "type": "Conference / Showcase",
-      "category": ["Entrepreneurship", "Innovation"],
+      "category": [
+        "Entrepreneurship", "Innovation",
+        "Startups", "Networking", "Business"
+      ],
       "faculty": ["All"],
       "link": "https://innovation.ubc.ca/events/immersion-week-2025",
       "location": "Robson Square",
       "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "009",
       "name": "UBC Data & Ethics Hackathon",
@@ -129,12 +161,16 @@
       "applicationDeadline": "2025-11-01",
       "price": "$10",
       "type": "Hackathon",
-      "category": ["Data Science", "Ethics"],
+      "category": [
+        "Data Science", "Ethics",
+        "AI", "Machine Learning", "Hackathons"
+      ],
       "faculty": ["All"],
       "link": "https://ethicsanddata.ubc.ca/events/hackathon",
       "location": "AMS Nest, UBC",
       "image": "https://images.unsplash.com/photo-1558888409-3a82f4a5f82b?auto=format&fit=crop&w=1200&q=80"
     },
+
     {
       "id": "010",
       "name": "UBC Medicine Datathon",
@@ -144,7 +180,10 @@
       "applicationDeadline": "2025-03-10",
       "price": "Free",
       "type": "Datathon",
-      "category": ["Health", "Data Science"],
+      "category": [
+        "Health", "Data Science",
+        "AI", "Machine Learning", "Research Opportunities", "Hackathons"
+      ],
       "faculty": ["Medicine", "Science"],
       "link": "https://datascienceandhealth.ubc.ca/events",
       "location": "Life Sciences Centre, UBC",
@@ -159,7 +198,10 @@
       "applicationDeadline": "2025-10-06",
       "price": "Free",
       "type": "Meetup",
-      "category": ["AI", "Machine Learning"],
+      "category": [
+        "AI", "Machine Learning",
+        "Data Science", "Research Opportunities", "SWE"
+      ],
       "faculty": ["Computer Science", "Engineering"],
       "link": "https://ml.ubc.ca/events",
       "location": "ICICS X350",
@@ -174,7 +216,10 @@
       "applicationDeadline": "2025-11-10",
       "price": "$20",
       "type": "Competition",
-      "category": ["Robotics", "Hardware", "Engineering"],
+      "category": [
+        "Robotics", "Hardware", "Engineering",
+        "3D Modeling", "Competitions", "SWE"
+      ],
       "faculty": ["Engineering"],
       "link": "https://engineering.ubc.ca/student-experience/engineering-student-society",
       "location": "Joe Enns Building",
@@ -189,7 +234,10 @@
       "applicationDeadline": "2025-02-20",
       "price": "$15",
       "type": "Networking",
-      "category": ["Finance", "Investing"],
+      "category": [
+        "Finance", "Investing",
+        "Consulting", "Career Skills", "Networking"
+      ],
       "faculty": ["Sauder", "BUCS"],
       "link": "https://ubcfa.com/events",
       "location": "Cecil Green Park House",
@@ -204,7 +252,10 @@
       "applicationDeadline": "2025-10-25",
       "price": "$10",
       "type": "Workshop",
-      "category": ["Design", "Product", "Innovation"],
+      "category": [
+        "Design", "Product", "Innovation",
+        "UX/UI", "Graphic Design", "Workshops"
+      ],
       "faculty": ["Engineering", "Arts", "Business"],
       "link": "https://ubcdesign.club/events",
       "location": "AMS Nest, UBC",
@@ -219,7 +270,10 @@
       "applicationDeadline": "2025-11-15",
       "price": "Free",
       "type": "Case Competition",
-      "category": ["Sustainability", "Policy", "Business"],
+      "category": [
+        "Sustainability", "Policy", "Business",
+        "Climate", "Social Impact", "Competitions", "Clean Tech"
+      ],
       "faculty": ["Land & Food Systems", "Arts"],
       "link": "https://www.landfood.ubc.ca/news-events/events",
       "location": "Allard Hall",
@@ -234,7 +288,10 @@
       "applicationDeadline": "2025-12-01",
       "price": "Free",
       "type": "Workshop / Competition",
-      "category": ["Security", "Algorithms"],
+      "category": [
+        "Security", "Algorithms",
+        "Cybersecurity", "Hackathons", "Competitions"
+      ],
       "faculty": ["Computer Science", "Engineering"],
       "link": "https://icpc.cs.ubc.ca/",
       "location": "ICICS Building, UBC",
@@ -249,7 +306,10 @@
       "applicationDeadline": "2025-11-05",
       "price": "Free",
       "type": "Data Jam",
-      "category": ["Public Health", "Policy", "Data Science"],
+      "category": [
+        "Public Health", "Policy", "Data Science",
+        "Social Impact", "Health", "Research Opportunities"
+      ],
       "faculty": ["Public Health", "Science"],
       "link": "https://phsa.ubc.ca/events",
       "location": "Life Sciences Centre",
@@ -264,7 +324,10 @@
       "applicationDeadline": "2025-10-18",
       "price": "Free",
       "type": "Workshop",
-      "category": ["Education", "Study Skills"],
+      "category": [
+        "Education", "Study Skills",
+        "Career Skills", "Workshops"
+      ],
       "faculty": ["All"],
       "link": "https://students.ubc.ca/academics/tutoring",
       "location": "Koerner Library, UBC",
@@ -279,7 +342,10 @@
       "applicationDeadline": "2025-12-01",
       "price": "Free",
       "type": "Seminar",
-      "category": ["Quantum", "Physics", "CS"],
+      "category": [
+        "Quantum", "Physics", "CS",
+        "AI", "Research Opportunities", "SWE"
+      ],
       "faculty": ["Science", "Engineering"],
       "link": "https://phas.ubc.ca/events",
       "location": "Hennings Physics Building",
@@ -294,86 +360,15 @@
       "applicationDeadline": "2025-10-28",
       "price": "Free",
       "type": "Social / Networking",
-      "category": ["Language", "Arts", "Culture"],
+      "category": [
+        "Language", "Arts", "Culture",
+        "Social", "Networking", "Community"
+      ],
       "faculty": ["Arts"],
       "link": "https://mls.ubc.ca/events",
       "location": "AMS Nest Lounge",
       "image": "https://images.unsplash.com/photo-1509099836639-18ba3d0f8d5e?auto=format&fit=crop&w=1200&q=80"
-    },
-    {
-      "id": "021",
-      "name": "Data Science Career Panel",
-      "organizer": "UBC Statistics Club",
-      "date": "2025-11-18T18:00:00-08:00",
-      "difficulty": "Easy",
-      "applicationDeadline": "2025-11-15",
-      "price": "Free",
-      "type": "Panel",
-      "category": ["Data Science", "Careers", "AI"],
-      "faculty": ["Science", "BUCS"],
-      "link": "https://stat.ubc.ca/events",
-      "location": "Henry Angus Building",
-      "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1200&q=80"
-    },
-    {
-      "id": "022",
-      "name": "Sustainability Film Screening",
-      "organizer": "UBC Environmental Club",
-      "date": "2025-10-22T19:00:00-07:00",
-      "difficulty": "Easy",
-      "applicationDeadline": "2025-10-20",
-      "price": "Free",
-      "type": "Social",
-      "category": ["Environment", "Film", "Sustainability"],
-      "faculty": ["All"],
-      "link": "https://env.ubc.ca/events",
-      "location": "AMS Nest Theatre",
-      "image": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
-    },
-    {
-      "id": "023",
-      "name": "Entrepreneurship Bootcamp (Sauder)",
-      "organizer": "Sauder Entrepreneurship Club",
-      "date": "2025-10-12T09:00:00-07:00",
-      "difficulty": "Easy",
-      "applicationDeadline": "2025-10-04",
-      "price": "$20",
-      "type": "Bootcamp",
-      "category": ["Business", "Startup", "Entrepreneurship"],
-      "faculty": ["Sauder", "BUCS"],
-      "link": "https://www.sauder.ubc.ca/student-experience/clubs",
-      "location": "Sauder Learning Labs",
-      "image": "https://images.unsplash.com/photo-1484242857719-4b9144542727?auto=format&fit=crop&w=1200&q=80"
-    },
-    {
-      "id": "024",
-      "name": "Biomedical Data Science Workshop",
-      "organizer": "UBC Biomedical Engineering",
-      "date": "2025-10-18T13:00:00-07:00",
-      "difficulty": "Hard",
-      "applicationDeadline": "2025-10-10",
-      "price": "Free",
-      "type": "Workshop",
-      "category": ["Data Science", "Bioengineering"],
-      "faculty": ["Engineering", "Science", "Medicine"],
-      "link": "https://www.bme.ubc.ca/events",
-      "location": "Biomedical Engineering Lab",
-      "image": "https://images.unsplash.com/photo-1581091012184-7b0d4077f31b?auto=format&fit=crop&w=1200&q=80"
-    },
-    {
-      "id": "025",
-      "name": "Nonprofit Case Competition",
-      "organizer": "UBC Social Impact Club",
-      "date": "2025-11-18T10:00:00-08:00",
-      "difficulty": "Medium",
-      "applicationDeadline": "2025-11-05",
-      "price": "$5",
-      "type": "Case Competition",
-      "category": ["Social Impact", "Nonprofit", "Business"],
-      "faculty": ["Arts", "Sauder"],
-      "link": "https://ubcsocialimpact.ca/events",
-      "location": "AMS Nest",
-      "image": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80"
     }
+    
   ]
 }

@@ -1,19 +1,9 @@
-// src/pages/Onboarding.jsx
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Card from '../components/Card.jsx'
 import Chip from '../components/Chip.jsx'
 import Button from '../components/Button.jsx'
 import { getUserPrefs, saveUserPrefs } from '../lib/storage.js'
-
-/*
-  Improved Onboarding:
-  - grouped, descriptive interests
-  - broader faculty list
-  - recommended interests based on selected faculty
-  - min/max interest validation (2-5)
-  - accessible chips (keyboard + aria)
-*/
 
 const FACULTIES = [
   'Sauder (Business)',
@@ -50,9 +40,8 @@ export default function Onboarding() {
 
   // ui state
   const [touched, setTouched] = useState({ name: false, faculty: false, interests: false })
-  const [error, setError] = useState('') // for showing temporary messages (e.g., max reached)
+  const [error, setError] = useState('')
 
-  // Load existing prefs on mount
   useEffect(() => {
     const existing = getUserPrefs()
     if (existing) {
@@ -62,59 +51,48 @@ export default function Onboarding() {
     }
   }, [])
 
-  // Derived lists
-  const ALL_INTERESTS = useMemo(
-    () => Object.values(INTEREST_CATEGORIES).flat(),
-    []
-  )
-
-  // Simple faculty -> recommended interests mapping
-  const facultyRecommendations = useMemo(() => {
-    if (!faculty) return []
-    const map = {
-      'Sauder (Business)': ['entrepreneurship', 'finance', 'product management'],
-      'Applied Science / Engineering': ['web dev', 'robotics', 'machine learning'],
-      Science: ['data science', 'research opportunities', 'hackathons'],
-      Arts: ['graphic design', 'social', 'networking'],
-      'Land & Food Systems': ['sustainability', 'volunteering', 'climate'],
-      Forestry: ['sustainability', 'field workshops', 'volunteering'],
-      'Computer Science': ['ai', 'web dev', 'cybersecurity'],
-      'Medicine & Health Sciences': ['research opportunities', 'workshops', 'volunteering'],
-      Education: ['workshops', 'volunteering', 'career fairs'],
-      Law: ['networking', 'consulting', 'career fairs']
-    }
-    return map[faculty] || []
-  }, [faculty])
+  const ALL_INTERESTS = useMemo(() => Object.values(INTEREST_CATEGORIES).flat(), [])
 
   const toggleInterest = useCallback((tag) => {
     setError('')
     setInterests(prev => {
-      if (prev.includes(tag)) {
-        return prev.filter(t => t !== tag)
-      } else {
-        if (prev.length >= MAX_INTERESTS) {
-          setError(`You can select up to ${MAX_INTERESTS} interests.`)
-          return prev
-        }
-        return [...prev, tag]
+      if (prev.includes(tag)) return prev.filter(t => t !== tag)
+      if (prev.length >= MAX_INTERESTS) {
+        setError(`You can select up to ${MAX_INTERESTS} interests.`)
+        return prev
       }
+      return [...prev, tag]
     })
   }, [])
 
-  const valid = useMemo(() => {
-    return name.trim().length > 0 && !!faculty && interests.length >= MIN_INTERESTS
-  }, [name, faculty, interests])
+  const valid = useMemo(() => name.trim().length > 0 && !!faculty && interests.length >= MIN_INTERESTS, [name, faculty, interests])
+
+  // Save and dispatch an event so Feed updates immediately in this tab
+  const saveAndNotify = useCallback((payload) => {
+    saveUserPrefs(payload)
+    try {
+      window.dispatchEvent(new CustomEvent('userprefs-updated', { detail: payload }))
+    } catch (e) {
+      // ignore if CustomEvent isn't supported (very old browsers)
+    }
+  }, [])
 
   const handleSaveAndContinue = useCallback(() => {
     setTouched({ name: true, faculty: true, interests: true })
     if (!valid) return
     const payload = { name: name.trim(), faculty, interests }
-    saveUserPrefs(payload)
-    // small UX: navigate to feed after saving
+    saveAndNotify(payload)
     nav('/feed')
-  }, [name, faculty, interests, nav, valid])
+  }, [name, faculty, interests, nav, valid, saveAndNotify])
 
-  const handleReset = useCallback(() => {
+  const handleSave = useCallback(() => {
+    setTouched({ name: true, faculty: true, interests: true })
+    if (!valid) return
+    const payload = { name: name.trim(), faculty, interests }
+    saveAndNotify(payload)
+  }, [name, faculty, interests, valid, saveAndNotify])
+
+  const handleResetLocal = useCallback(() => {
     setName('')
     setFaculty('')
     setInterests([])
@@ -127,7 +105,6 @@ export default function Onboarding() {
       <h1 className="h1">Personalize your feed 🎯</h1>
 
       <Card className="space-bottom">
-        {/* Name */}
         <div className="h2">Your name</div>
         <input
           className="input"
@@ -137,11 +114,8 @@ export default function Onboarding() {
           onBlur={() => setTouched(t => ({ ...t, name: true }))}
           aria-label="Your name"
         />
-        {touched.name && !name.trim() && (
-          <div style={{ color: 'var(--danger)', marginTop: 6 }}>Name is required.</div>
-        )}
+        {touched.name && !name.trim() && <div style={{ color: 'var(--danger)', marginTop: 6 }}>Name is required.</div>}
 
-        {/* Faculty */}
         <div className="h2 space-top">Your faculty</div>
         <div className="chips" role="list">
           {FACULTIES.map(f => (
@@ -157,23 +131,20 @@ export default function Onboarding() {
             </Chip>
           ))}
         </div>
-        {touched.faculty && !faculty && (
-          <div style={{ color: 'var(--danger)', marginTop: 6 }}>Pick a faculty.</div>
-        )}
+        {touched.faculty && !faculty && <div style={{ color: 'var(--danger)', marginTop: 6 }}>Pick a faculty.</div>}
 
-        {/* Recommended */}
-        {faculty && facultyRecommendations.length > 0 && (
+        {faculty && (
           <div style={{ marginTop: 12 }}>
-            <div className="muted" style={{ fontSize: 13 }}>Recommended for {faculty.split(' (')[0]}:</div>
+            <div className="muted" style={{ fontSize: 13 }}>
+              Recommended for {faculty.split(' (')[0]}:
+            </div>
+            {/* Light recommendation: pre-check common tags from categories */}
             <div className="chips" style={{ marginTop: 8 }}>
-              {facultyRecommendations.map(r => (
+              {ALL_INTERESTS.slice(0, 6).map(r => (
                 <Chip
                   key={r}
                   active={interests.includes(r)}
                   onClick={() => toggleInterest(r)}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={interests.includes(r)}
                 >
                   {r}
                 </Chip>
@@ -182,7 +153,6 @@ export default function Onboarding() {
           </div>
         )}
 
-        {/* Interests */}
         <div className="h2 space-top">Pick {MIN_INTERESTS}–{MAX_INTERESTS} interests</div>
         <div style={{ marginBottom: 8, color: 'var(--muted)' }}>
           Choose topics you want to see in your feed. You can pick up to {MAX_INTERESTS}.
@@ -198,9 +168,6 @@ export default function Onboarding() {
                   key={tag}
                   active={interests.includes(tag)}
                   onClick={() => toggleInterest(tag)}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={interests.includes(tag)}
                 >
                   {tag}
                 </Chip>
@@ -216,27 +183,11 @@ export default function Onboarding() {
         )}
         {error && <div style={{ color: 'var(--danger)', marginTop: 6 }}>{error}</div>}
 
-        {/* Actions */}
         <div className="row space-top">
-          <Button
-            kind="accent"
-            disabled={!valid}
-            onClick={handleSaveAndContinue}
-          >
-            Save & Continue
-          </Button>
-
-          <Button kind="ghost" onClick={handleReset}>Reset</Button>
-
-          <Button
-            kind="ghost"
-            onClick={() => {
-              // Quick skip — don't save anything new, just go to feed
-              nav('/feed')
-            }}
-          >
-            Skip for now
-          </Button>
+          <Button kind="accent" disabled={!valid} onClick={handleSaveAndContinue}>Save & Continue</Button>
+          <Button kind="ghost" onClick={handleSave}>Save</Button>
+          <Button kind="ghost" onClick={handleResetLocal}>Reset</Button>
+          <Button kind="ghost" onClick={() => nav('/feed')}>Skip for now</Button>
         </div>
       </Card>
 
@@ -244,8 +195,7 @@ export default function Onboarding() {
         <div className="h2" style={{ marginTop: 0 }}>What you'll get</div>
         <p className="muted">
           A personalized event feed for <strong>{faculty || 'your faculty'}</strong> based on interests like{' '}
-          <strong>{interests.length ? interests.join(', ') : 'your picks'}</strong>. Save events, get trending updates,
-          and add events to your calendar in one click.
+          <strong>{interests.length ? interests.join(', ') : 'your picks'}</strong>. You can update these anytime from the Onboarding/Settings page.
         </p>
       </Card>
     </div>

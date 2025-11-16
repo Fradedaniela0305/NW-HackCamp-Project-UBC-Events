@@ -72,7 +72,9 @@ export default function Event() {
 
   return (
     <div>
-      <div className="h1" style={{marginBottom: 0}}>{evt.title}</div>
+      <div className="event-title-slideshow" style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', padding: '24px' }}>
+  <div className="event-title-overlay">{evt.title}</div>
+</div>
       <div className="muted" style={{marginTop: 4, marginBottom: 12}}>
         {when} · {evt.location || 'TBA'} {evt.organizer ? `· by ${evt.organizer}` : ''}
       </div>

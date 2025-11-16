@@ -1,6 +1,6 @@
 // src/pages/Feed.jsx
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Card from '../components/Card.jsx'
 import Chip from '../components/Chip.jsx'
 import EventCard from '../components/EventCard.jsx'
@@ -13,80 +13,114 @@ import {
   toggleSaveId
 } from '../lib/storage.js'
 
-const LEVELS = ['beginner','intermediate','advanced']
+const LEVELS = ['beginner', 'intermediate', 'advanced']
+const TAG_CLOUD_LIMIT = 5
+
+// ONLY these 5 tags will appear in the popular tags cloud (and be selectable)
+const ALLOWED_TAGS = ['hackathon', 'web dev', 'product management', 'data science', 'ai']
 
 export default function Feed() {
   const nav = useNavigate()
-  const prefs = getUserPrefs()
-
-  // NEW: default view shows ALL items (no time filter)
-  const [viewMode, setViewMode] = useState('all') // 'all' | 'personalized'
+  // initialize prefs from storage and keep it reactive
+  const [prefs, setPrefs] = useState(() => getUserPrefs())
+  // default viewMode: personalized if prefs exist, otherwise 'all'
+  const [viewMode, setViewMode] = useState(() => (getUserPrefs() ? 'personalized' : 'all'))
 
   const [events, setEvents] = useState([])
   const [level, setLevel] = useState('all')
-  const [sort, setSort] = useState('trending') // 'trending' | 'date'
-  const [q, setQ] = useState('')               // search text
-  const [selectedTags, setSelectedTags] = useState([]) // quick tag filters
+  const [sort, setSort] = useState('trending')
+  const [q, setQ] = useState('')
+  const [selectedTags, setSelectedTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [version, setVersion] = useState(0) // bump to re-run memos after save toggles
+
+  // normalization helper
+  const norm = s => String(s || '').toLowerCase().trim()
 
   useEffect(() => {
     setLoading(true)
     loadEvents()
       .then(fileEvents => {
-        const custom = getCustomEvents()
-        setEvents([...custom, ...fileEvents]) // custom first so new ones feel “top”
+        const custom = getCustomEvents() || []
+        setEvents([...custom, ...fileEvents])
       })
       .catch(e => setError(e.message || 'Failed to load events'))
       .finally(() => setLoading(false))
   }, [])
 
-  /**
-   * Base pool:
-   * - ALL view: return EVERYTHING (no past filtering).
-   * - PERSONALIZED view: filter by faculty + interests (still NO date filter).
-   */
+  // Listen for prefs updates:
+  useEffect(() => {
+    function onPrefsUpdated(e) {
+      // custom event provides detail, but guard fallback to storage read
+      const newPrefs = (e?.detail) ? e.detail : getUserPrefs()
+      setPrefs(newPrefs)
+      // if user just added prefs and we were on 'all', optionally switch to personalized
+      if (newPrefs && viewMode === 'all') {
+        setViewMode('personalized')
+      }
+    }
+    // storage event for other tabs/windows
+    function onStorage(e) {
+      if (!e) return
+      // When storage changes, read prefs fresh
+      setPrefs(getUserPrefs())
+    }
+
+    window.addEventListener('userprefs-updated', onPrefsUpdated)
+    window.addEventListener('storage', onStorage)
+    return () => {
+      window.removeEventListener('userprefs-updated', onPrefsUpdated)
+      window.removeEventListener('storage', onStorage)
+    }
+  }, [viewMode])
+
+  // Base pool: returns everything for 'all' else filter by faculty+interests when 'personalized'
   const basePool = useMemo(() => {
     if (!events.length) return []
-
     if (viewMode === 'personalized' && prefs) {
       return events.filter(e => {
         const facultyOk = !e.faculty || e.faculty === 'All' || e.faculty === prefs.faculty
-        const interestOk = (e.tags || []).some(t => prefs.interests.includes(t))
+        const interestOk = (e.tags || []).some(t => (prefs.interests || []).includes(t))
         return facultyOk && interestOk
       })
     }
-
-    // 'all' mode — show everything
     return events
   }, [events, prefs, viewMode])
 
-  // Build a tag cloud from current base pool
+  // tag cloud from basePool BUT limited to ALLOWED_TAGS and top TAG_CLOUD_LIMIT
   const tagCloud = useMemo(() => {
+    const allowedNorm = new Set(ALLOWED_TAGS.map(norm))
     const counts = {}
     for (const e of basePool) {
-      for (const t of (e.tags || [])) counts[t] = (counts[t] || 0) + 1
+      for (const t of (e.tags || [])) {
+        const n = norm(t)
+        if (!allowedNorm.has(n)) continue
+        counts[n] = (counts[n] || 0) + 1
+      }
     }
     return Object.entries(counts)
-      .sort((a,b) => b[1] - a[1])
-      .slice(0, 10)
-      .map(([tag, count]) => ({ tag, count }))
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, TAG_CLOUD_LIMIT)
+      .map(([normTag, count]) => {
+        // find canonical display tag from ALLOWED_TAGS (preserve spacing/casing from array)
+        const canonical = ALLOWED_TAGS.find(x => norm(x) === normTag) || normTag
+        return { tag: canonical, count }
+      })
   }, [basePool])
 
-  // Trending: top 3 by save count within current base pool
+  // Trending computed within current basePool using save counts
   const trending = useMemo(() => {
-    const counts = getSaveCounts()
-    if (!counts || !basePool.length) return []
+    const counts = getSaveCounts() || {}
+    if (!basePool.length) return []
     const idToEvent = new Map(basePool.map(e => [e.id, e]))
     return Object.entries(counts)
       .filter(([id, c]) => c > 0 && idToEvent.has(id))
-      .sort((a,b) => b[1] - a[1])
+      .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
-      .map(([id, c]) => ({ evt: idToEvent.get(id), count: c }))
+      .map(([id, count]) => ({ evt: idToEvent.get(id), count }))
   }, [basePool, version])
 
-  // Text match helper (all words must be found somewhere)
   function matchesQuery(e, query) {
     if (!query.trim()) return true
     const hay = [
@@ -97,28 +131,35 @@ export default function Feed() {
     return words.every(w => hay.includes(w))
   }
 
-  // Robust date getter for sorting (items without date go last)
   function dateOrInfinity(iso) {
     if (!iso) return Number.POSITIVE_INFINITY
     const t = new Date(iso).getTime()
     return Number.isFinite(t) ? t : Number.POSITIVE_INFINITY
   }
 
-  // Apply level, tags, and search; then sort
+  // Apply level, tags, search, then sort
   const filtered = useMemo(() => {
     const withLevel = basePool.filter(e => (level === 'all') || (e.level === level))
+
+    // match selected tags by normalized compare (so event tags with different casing still match)
+    const selectedNorm = new Set(selectedTags.map(norm))
     const withTags = selectedTags.length
-      ? withLevel.filter(e => (e.tags || []).some(t => selectedTags.includes(t)))
+      ? withLevel.filter(e => (e.tags || []).some(t => selectedNorm.has(norm(t))))
       : withLevel
+
     const withSearch = withTags.filter(e => matchesQuery(e, q))
 
     if (sort === 'date') {
       return [...withSearch].sort((a, b) => dateOrInfinity(a.start) - dateOrInfinity(b.start))
     }
 
-    // 'trending': show saved first (demo-friendly)
+    // trending: saved first (demo-friendly), then by date
     const savedSet = new Set(getSavedIds())
-    return [...withSearch].sort((a, b) => (savedSet.has(b.id) - savedSet.has(a.id)))
+    return [...withSearch].sort((a, b) => {
+      const savedDiff = (+savedSet.has(b.id)) - (+savedSet.has(a.id))
+      if (savedDiff !== 0) return savedDiff
+      return dateOrInfinity(a.start) - dateOrInfinity(b.start)
+    })
   }, [basePool, level, sort, q, selectedTags, version])
 
   function toggleTag(tag) {
@@ -132,11 +173,10 @@ export default function Feed() {
     setSelectedTags([])
   }
 
-  // Compose heading per mode
   const heading = useMemo(() => {
     if (viewMode === 'personalized') {
       if (!prefs) return 'Personalized (set your profile in Onboarding)'
-      return `Personalized for ${prefs.faculty} + ${prefs.interests.join(', ')}`
+      return `Personalized for ${prefs.faculty} · ${prefs.interests.join(', ')}`
     }
     return 'All events'
   }, [viewMode, prefs])
@@ -145,64 +185,56 @@ export default function Feed() {
     <div>
       <div className="h1">{heading}</div>
 
-      {/* View mode + quick overview */}
       <Card className="space-bottom">
         <div className="row-between">
           <div>
-            <div className="h2" style={{marginTop:0}}>View</div>
+            <div className="h2" style={{ marginTop: 0 }}>View</div>
             <div className="chips">
-              <Chip active={viewMode==='all'} onClick={()=>setViewMode('all')}>All</Chip>
+              <Chip active={viewMode === 'all'} onClick={() => setViewMode('all')}>All</Chip>
               <Chip
-                active={viewMode==='personalized'}
+                active={viewMode === 'personalized'}
                 onClick={() => setViewMode('personalized')}
               >
                 Personalized
               </Chip>
             </div>
-            {viewMode==='personalized' && !prefs && (
-              <div className="muted" style={{marginTop:6}}>
-                No profile yet. Go to Onboarding/Settings to set faculty & interests.
+            {viewMode === 'personalized' && !prefs && (
+              <div className="muted" style={{ marginTop: 6 }}>
+                No profile yet. <Link to="/onboarding">Set up Onboarding</Link> or <button className="btn btn-ghost" onClick={() => nav('/onboarding')}>Open Onboarding</button>.
               </div>
             )}
           </div>
 
           <div>
-            <div className="h2" style={{marginTop:0}}>Sort</div>
+            <div className="h2" style={{ marginTop: 0 }}>Sort</div>
             <div className="chips">
-              <Chip active={sort==='trending'} onClick={()=>setSort('trending')}>Trending</Chip>
-              <Chip active={sort==='date'} onClick={()=>setSort('date')}>Date</Chip>
+              <Chip active={sort === 'trending'} onClick={() => setSort('trending')}>Trending</Chip>
+              <Chip active={sort === 'date'} onClick={() => setSort('date')}>Date</Chip>
             </div>
           </div>
         </div>
       </Card>
 
-      {/* Trending strip (based on current base pool) */}
       {trending.length > 0 && (
         <Card className="space-bottom">
           <div className="row-between">
-            <div className="h2" style={{marginTop:0}}>🔥 Trending {viewMode==='personalized' ? 'for you' : 'overall'}</div>
+            <div className="h2" style={{ marginTop: 0 }}>🔥 Trending {viewMode === 'personalized' ? 'for you' : 'overall'}</div>
             <div className="muted">based on saves</div>
           </div>
           <div className="trend-row">
-            {trending.map(({evt, count}, i) => {
+            {trending.map(({ evt, count }, i) => {
               const saved = getSavedIds().includes(evt.id)
               return (
                 <div key={evt.id} className="trend-card">
-                  <div className="trend-rank">{i+1}</div>
+                  <div className="trend-rank">{i + 1}</div>
                   <div className="trend-title">{evt.title}</div>
-                  <div className="trend-meta">
-                    {evt.level || '—'} · {evt.location || 'TBA'}
-                  </div>
-                  <div className="trend-meta">★ {count} save{count===1?'':'s'}</div>
+                  <div className="trend-meta">{evt.level || '—'} · {evt.location || 'TBA'}</div>
+                  <div className="trend-meta">★ {count} save{count === 1 ? '' : 's'}</div>
                   <div className="row space-top">
-                    {evt.url && (
-                      <a className="btn btn-ghost" href={evt.url} target="_blank" rel="noreferrer">
-                        Details
-                      </a>
-                    )}
+                    {evt.url && <a className="btn btn-ghost" href={evt.url} target="_blank" rel="noreferrer">Details</a>}
                     <button
                       className={`btn ${saved ? 'btn-primary' : 'btn-ghost'}`}
-                      onClick={() => { toggleSaveId(evt.id); setVersion(v => v+1) }}
+                      onClick={() => { toggleSaveId(evt.id); setVersion(v => v + 1) }}
                     >
                       {saved ? 'Saved ✓' : 'Save'}
                     </button>
@@ -214,7 +246,6 @@ export default function Feed() {
         </Card>
       )}
 
-      {/* Search + Tag filters */}
       <Card className="space-bottom">
         <div className="row-between">
           <div className="searchbar">
@@ -231,9 +262,9 @@ export default function Feed() {
 
         {tagCloud.length > 0 && (
           <>
-            <div className="h2">Popular tags {viewMode==='personalized' ? '(in your view)' : '(overall)'}</div>
+            <div className="h2">Popular tags {viewMode === 'personalized' ? '(in your view)' : '(overall)'}</div>
             <div className="chips">
-              {tagCloud.map(({tag, count}) => (
+              {tagCloud.map(({ tag, count }) => (
                 <Chip key={tag} active={selectedTags.includes(tag)} onClick={() => toggleTag(tag)}>
                   #{tag} ({count})
                 </Chip>
@@ -243,25 +274,21 @@ export default function Feed() {
         )}
       </Card>
 
-      {/* Level filter */}
       <Card className="space-bottom">
-        <div className="h2" style={{marginTop:0}}>Level</div>
+        <div className="h2" style={{ marginTop: 0 }}>Level</div>
         <div className="chips">
-          <Chip active={level==='all'} onClick={()=>setLevel('all')}>All</Chip>
-          {LEVELS.map(l => <Chip key={l} active={level===l} onClick={()=>setLevel(l)}>{l}</Chip>)}
+          <Chip active={level === 'all'} onClick={() => setLevel('all')}>All</Chip>
+          {LEVELS.map(l => <Chip key={l} active={level === l} onClick={() => setLevel(l)}>{l}</Chip>)}
         </div>
       </Card>
 
-      {/* Content */}
       {loading && <Card>Loading events…</Card>}
       {error && <Card>Failed to load events: {error}</Card>}
-      {!loading && !error && filtered.length===0 && (
-        <Card>No matches. Try clearing filters or switching the view mode.</Card>
-      )}
+      {!loading && !error && filtered.length === 0 && <Card>No matches. Try clearing filters or switching the view mode.</Card>}
 
       <div className="grid">
         {filtered.map(evt => (
-          <EventCard key={evt.id} evt={evt} onSaveToggle={() => setVersion(v => v+1)} />
+          <EventCard key={evt.id} evt={evt} onSaveToggle={() => setVersion(v => v + 1)} />
         ))}
       </div>
     </div>
