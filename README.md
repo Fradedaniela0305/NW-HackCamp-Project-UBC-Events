@@ -26,3 +26,15 @@ Our mission is to help students get involved in the UBC community, grow their sk
 ## Video Demo
 https://youtu.be/Yg1Bl_Fh0Xc?si=5K2jbmicBhxkGxn6
 
+## Screenshots
+
+### Main Menu
+![Main Menu](Screenshots/MainMenu.png)
+
+### Interest Selection (Chips)
+![Interest Selection](Screenshots/Chips.png)
+
+### Event Search Results
+![Search Results](Screenshots/Search.png)
+
+
