@@ -1,20 +1,28 @@
-<<<<<<< HEAD
-# NWPlusHackathon
-=======
-# React + Vite
+# UBC Events & Opportunities Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+Students at UBC often struggle to find relevant events and opportunities that are clearly and reliably available. Event information is scattered across websites, Instagram pages, email newsletters, and physical posters, making it easy to miss deadlines or overlook valuable opportunities.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project aims to solve that problem by creating a centralized platform that consolidates UBC events into one organized, easy-to-use, and personalized hub. Instead of hunting across multiple platforms, students can discover opportunities in one place, presented in a clean and consistent format.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Centralized event listings for UBC-related opportunities  
+- Clean and consistent user interface  
+- Personalized recommendations based on:
+  - Faculty
+  - Experience level
+  - Interests (e.g. AI, sustainability, design, business, social impact, and more)
+- Simplified discovery of events, deadlines, and involvement opportunities
 
-## Expanding the ESLint configuration
+Our mission is to help students get involved in the UBC community, grow their skills, and build their resumes without stress or confusion.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
->>>>>>> 5e9b5ab (first commit)
+## Built With
+
+- JavaScript  
+- React  
+
+## Video Demo
+https://youtu.be/Yg1Bl_Fh0Xc?si=5K2jbmicBhxkGxn6
+
